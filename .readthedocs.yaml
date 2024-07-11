@@ -32,6 +32,7 @@ python:
     - requirements: requirements.txt
 
 # Spécifiez le chemin de sortie correct
-outputs:
-  html:
-    path: $READTHEDOCS_OUTPUT/html
+html:
+  use_system_packages: true
+  # Correction: 'directory' au lieu de 'path'
+  directory: $READTHEDOCS_OUTPUT/html
