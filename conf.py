@@ -1,6 +1,5 @@
 import os
 import sys
-import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('.'))
 
@@ -19,7 +18,9 @@ author = 'El_Prof'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx_rtd_theme',
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
 ]
 
 source_suffix = '.rst '
@@ -32,7 +33,7 @@ version = ''
 
 # The full version, including alphe/beta/rc tags.
 release = ''
-language = None
+language = 'en'
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -41,7 +42,7 @@ pygments_style = 'sphinx'
 todo_include_todos = False
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
