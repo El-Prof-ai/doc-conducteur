@@ -1,5 +1,6 @@
 import os
 import sys
+import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('.'))
 
@@ -17,7 +18,9 @@ author = 'El_Prof'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinx_rtd_theme',
+]
 
 source_suffix = '.rst '
 
