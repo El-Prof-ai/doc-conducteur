@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 import subprocess
+import os
+import platform
 
 app = Flask(__name__)
 
@@ -32,23 +34,29 @@ def execute_git_pull(branch):
 
 def execute_make():
     try:
-        # Exécution de la commande './make html' dans le répertoire courant
-        result = subprocess.run(['./make', 'html'], 
-                                capture_output=True, 
-                                text=True, 
-                                shell=True)
-        
+        # Chemin du répertoire où se trouve le script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Détermine le système d'exploitation
+        is_windows = platform.system() == 'Windows'
+
+        # Commande pour Unix
+        command = ['./make', 'html']
+
+        # Exécution de la commande dans le bon répertoire
+        result = subprocess.run(command, capture_output=True, text=True, cwd=script_dir, shell=is_windows)
+
         # Vérification du code de retour
         if result.returncode == 0:
             return jsonify({
                 'status': 'success',
-                'message': 'Exécution de ./make html réussie',
+                'message': 'Exécution de make html réussie',
                 'output': result.stdout
             }), 200
         else:
             return jsonify({
                 'status': 'error',
-                'message': 'Erreur lors de l\'exécution de ./make html',
+                'message': 'Erreur lors de l\'exécution de make html',
                 'error': result.stderr
             }), 500
     
