@@ -1,19 +1,22 @@
 from flask import Flask, request, jsonify
 import subprocess
-import os
 
 app = Flask(__name__)
 
 @app.route('/execute-make-html', methods=['POST'])
 def execute_make_html():
-    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
+    if not request.is_json:
+        return jsonify({"error": "Invalid Content-Type. Expected application/json"}), 415
     
-    pull_result = execute_git_pull(branch)
-    if pull_result.status_code != 200:
-        return pull_result
+    data = request.get_json()
+    branch = data.get('branch', 'main')  # Par défaut, la branche est 'main'
+    
+    pull_result, pull_status_code = execute_git_pull(branch)
+    if pull_status_code != 200:
+        return pull_result, pull_status_code
 
-    make_result = execute_make()
-    return make_result
+    make_result, make_status_code = execute_make()
+    return make_result, make_status_code
 
 def execute_git_pull(branch):
     try:
