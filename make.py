@@ -1,10 +1,24 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import subprocess
 import os
 
 app = Flask(__name__)
 
-@app.route('/execute-make-html', methods=['POST'])
+@app.route('/execute-make-html', methods=['GET'])
+def pull():
+    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
+    
+    try:
+        # Exécutez la commande Git pull
+        result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True)
+
+        if result.returncode == 0:
+            return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
+        else:
+            return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
+    except Exception as e:
+        return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
+
 def execute_make_html():
     try:
         # Obtenir le chemin du répertoire du script
