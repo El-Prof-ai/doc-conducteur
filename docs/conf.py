@@ -47,4 +47,4 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'  # Utilisez le thème ReadTheDocs
-# html_static_path = ['_static']  Ne pas inclure le répertoire de sortie ici
+html_static_path = ['_static']  # Ne pas inclure le répertoire de sortie ici
