@@ -8,6 +8,14 @@ app = Flask(__name__)
 def execute_make_html():
     branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
     
+    pull_result = execute_git_pull(branch)
+    if pull_result.status_code != 200:
+        return pull_result
+
+    make_result = execute_make()
+    return make_result
+
+def execute_git_pull(branch):
     try:
         # Exécutez la commande Git pull
         result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True)
@@ -19,29 +27,25 @@ def execute_make_html():
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
-def execute_make_html():
+def execute_make():
     try:
-        # Obtenir le chemin du répertoire du script
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        
-        # Exécution de la commande 'make.bat html' dans le répertoire du script
-        result = subprocess.run(['make.bat', 'html'], 
+        # Exécution de la commande './make html' dans le répertoire courant
+        result = subprocess.run(['./make', 'html'], 
                                 capture_output=True, 
                                 text=True, 
-                                cwd=script_dir,
                                 shell=True)
         
         # Vérification du code de retour
         if result.returncode == 0:
             return jsonify({
                 'status': 'success',
-                'message': 'Exécution de make.bat html réussie',
+                'message': 'Exécution de ./make html réussie',
                 'output': result.stdout
             }), 200
         else:
             return jsonify({
                 'status': 'error',
-                'message': 'Erreur lors de l\'exécution de make.bat html',
+                'message': 'Erreur lors de l\'exécution de ./make html',
                 'error': result.stderr
             }), 500
     
