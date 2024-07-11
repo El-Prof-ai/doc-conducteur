@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/execute-make-html', methods=['GET'])
+@app.route('/execute-make-html', methods=['POST'])
 def pull():
     branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
     
