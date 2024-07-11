@@ -31,8 +31,3 @@ python:
   install:
     - requirements: requirements.txt
 
-# Spécifiez le chemin de sortie correct
-html:
-  use_system_packages: true
-  # Correction: 'directory' au lieu de 'path'
-  directory: $READTHEDOCS_OUTPUT/html
