@@ -14,7 +14,6 @@ project = 'presentationConducteur'
 copyright = '2024, El_Prof'
 author = 'El_Prof'
 
-
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
