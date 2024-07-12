@@ -31,11 +31,12 @@ def pull():
 def make():
     try:
         # Vérification de la fin du pull en vérifiant le status de git
-        status_line = get_git_status()
-        while status_line != "Your branch is up to date with 'origin/main'":
-            logging.info('Waiting for git pull to complete...')
-            time.sleep(3)
-            status_line = get_git_status()
+    #    status_line = get_git_status()
+     #   while status_line != "Your branch is up to date with 'origin/main'":
+      #      logging.info('Waiting for git pull to complete...')
+       #     time.sleep(3)
+        #    status_line = get_git_status()
+        time.sleep(60)
 
         # Obtenir le chemin du répertoire du script
         script_dir = os.path.dirname(os.path.abspath(__file__))
