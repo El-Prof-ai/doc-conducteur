@@ -18,7 +18,7 @@ def pull():
         if result.returncode == 0:
             # Si le pull est réussi, lancez la requête différée dans un thread
             threading.Thread(target=make).start()
-            logging.info('REPONDRE')
+            print('REPONDRE')
             return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
         else:
             return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
@@ -28,9 +28,9 @@ def pull():
 def make():
     
     try:
-        logging.info('make()')
+        print('make()')
         time.sleep(40)
-        logging.info('start make()........')
+        print('start make()........')
         # Obtenir le chemin du répertoire du script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
