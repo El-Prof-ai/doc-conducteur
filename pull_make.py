@@ -18,11 +18,14 @@ def pull():
 
         if result.returncode == 0:
             # Si le pull est réussi, lancez la requête différée dans un thread
+            logging.info('Pull successful. Starting make process...')
             threading.Thread(target=make).start()
             return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
         else:
+            logging.error(f'Pull failed: {result.stderr}')
             return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
     except Exception as e:
+        logging.error(f'An error occurred during pull: {str(e)}')
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
 def make():
@@ -30,6 +33,7 @@ def make():
         # Vérification de la fin du pull en vérifiant le status de git
         status_line = get_git_status()
         while status_line != "Your branch is up to date with 'origin/main'":
+            logging.info('Waiting for git pull to complete...')
             time.sleep(3)
             status_line = get_git_status()
 
@@ -37,6 +41,7 @@ def make():
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
         # Exécution de la commande 'make.bat html' dans le répertoire du script
+        logging.info('Running make.bat html...')
         result = subprocess.run(['make.bat', 'html'], capture_output=True, text=True, cwd=script_dir, shell=True)
         
         # Vérification du code de retour
