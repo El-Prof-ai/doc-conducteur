@@ -1,69 +1,72 @@
 import os
 from flask import Flask, request, jsonify
 import subprocess
-import threading
-
 import logging
+import time
 
 app = Flask(__name__)
 
 @app.route('/pull_make', methods=['POST'])
 def pull():
+    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
     
     try:
-       
-        #if result.returncode == 0:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Exécutez la commande Git pull
+        result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True,cwd=script_dir,shell=True)
+
+        if result.returncode == 0:
             # Si le pull est réussi, lancez la requête différée dans un thread
-        threading.Thread(target=delayed_request).start()
-        return jsonify({'message': 'Pull successful'}), 200
-      
-           # return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
+            status_line = get_git_status()
+            while(status_line != "Your branch is up to date with" ) :
+                time.sleep(5)
+                status_line = get_git_status()
+            make()
+            return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
+        else:
+            return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
-def delayed_request():
-    # Attendre une minute
-    #time.sleep(60)
-    # Faire la requête POST à /execute-make-html
-     # Exécutez la commande Git pull
-    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
+def make():
     
-    result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True)
-
-    if result.returncode == 0:
-    
-        #try:
-            #response = requests.post('http://127.0.0.1:5000/execute-make-html')
-            #print(f"Request to /execute-make-html responded with: {response.status_code} {response.text}")
-            
-        try:
-            # Obtenir le chemin du répertoire du script
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-            
-            # Exécution de la commande 'make.bat html' dans le répertoire du script
-            result = subprocess.run(['make.bat', 'html'], 
-                                    capture_output=True, 
-                                    text=True, 
-                                    cwd=script_dir,
-                                    shell=True)
-            # Vérification du code de retour
-            
-            if result.returncode == 0:
-                logging.info('Exécution de make.bat html réussie: %s', result.stdout)
-            else:
-                logging.error('Erreur lors de l\'exécution de make.bat html: %s', result.stdout)
+    try:
+        # Obtenir le chemin du répertoire du script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         
-        except Exception as e:
-            logging.error('Une erreur est survenue: %s', str(e))
+        # Exécution de la commande 'make.bat html' dans le répertoire du script
+        result = subprocess.run(['make.bat', 'html'], 
+                                capture_output=True, 
+                                text=True, 
+                                cwd=script_dir,
+                                shell=True)
+        
+        # Vérification du code de retour
+        if result.returncode == 0:
+            logging.info('Exécution de make.bat html réussie: %s', result.stdout)
+        else:
+            logging.error('Erreur lors de l\'exécution de make.bat html: %s', result.stdout)
+        
+    except Exception as e:
+        logging.error('Une erreur est survenue: %s', str(e))
 
-            
-        #except Exception as e:
-            #print(f"Failed to make request to /execute-make-html: {str(e)}")
+def get_git_status():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Exécute la commande `git status`
+    result = subprocess.run(['git', 'status'], shell=True, capture_output=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=script_dir, text=True)
+    
+    # Vérifie si la commande s'est exécutée avec succès
+    if result.returncode != 0:
+        print(f"Erreur lors de l'exécution de git status: {result.stderr}")
+        return "None"
+    
+    # Parcourt chaque ligne de la sortie pour trouver celle qui nous intéresse
+    for line in result.stdout.split('\n'):
+        if 'Your branch is up to date with' in line:
+            return "Your branch is up to date with"
+    
+    return "None"
 
-@app.route('/execute-make-html', methods=['POST'])
-def execute_make_html():
-    # Ajoutez ici le code pour gérer cette requête
-    return jsonify({'message': 'execute-make-html endpoint called'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)  # Changer le port ici
