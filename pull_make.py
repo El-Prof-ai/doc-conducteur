@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify
 import subprocess
+import threading
 import logging
 import time
 
@@ -17,11 +18,7 @@ def pull():
 
         if result.returncode == 0:
             # Si le pull est réussi, lancez la requête différée dans un thread
-            status_line = get_git_status()
-            while(status_line != "Your branch is up to date with" ) :
-                time.sleep(5)
-                status_line = get_git_status()
-            make()
+            threading.Thread(target=make).start()
             return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
         else:
             return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
@@ -31,6 +28,12 @@ def pull():
 def make():
     
     try:
+        # Vérification de la fin du pull
+        status_line = get_git_status()
+        while(status_line != "Your branch is up to date with" ) :
+            time.sleep(3)
+            status_line = get_git_status()
+
         # Obtenir le chemin du répertoire du script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
