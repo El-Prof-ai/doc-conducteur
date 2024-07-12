@@ -27,7 +27,9 @@ def pull():
 def make():
     
     try:
+        logging.info('make()')
         time.sleep(40)
+        logging.info('start make()........')
         # Obtenir le chemin du répertoire du script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
