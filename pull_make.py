@@ -27,7 +27,7 @@ def make():
     try:
         # Exécutez la commande Git pull
         result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True)
-        print('pull terminé')
+        print('PULL TERMINE.......')
         # Obtenir le chemin du répertoire du script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
@@ -38,6 +38,7 @@ def make():
                                 cwd=script_dir,
                                 shell=True)
         
+        print('MAKE TERMINE........')
         # Vérification du code de retour
         if results.returncode == 0:
             logging.info('Exécution de make.bat html réussie: %s', result.stdout)
