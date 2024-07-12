@@ -31,6 +31,7 @@ def make():
         print('make()')
         status_line = get_git_status()
         while(status_line != 'Your branch is up to date with'):
+            print('GIT STATUS')
             time.sleep(3)
             status_line = get_git_status()
         print('start make()........')
