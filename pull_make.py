@@ -42,6 +42,7 @@ def make():
                                 shell=True)
         
         # Vérification du code de retour
+        print('end make()........')
         if result.returncode == 0:
             logging.info('Exécution de make.bat html réussie: %s', result.stdout)
         else:
