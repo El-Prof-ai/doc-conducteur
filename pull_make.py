@@ -28,14 +28,14 @@ def make():
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
         # Exécution de la commande 'make.bat html' dans le répertoire du script
-        result = subprocess.run(['make.bat', 'html'], 
+        results = subprocess.run(['make.bat', 'html'], 
                                 capture_output=True, 
                                 text=True, 
                                 cwd=script_dir,
                                 shell=True)
         
         # Vérification du code de retour
-        if result.returncode == 0:
+        if results.returncode == 0:
             logging.info('Exécution de make.bat html réussie: %s', result.stdout)
         else:
             logging.error('Erreur lors de l\'exécution de make.bat html: %s', result.stdout)
