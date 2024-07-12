@@ -14,7 +14,7 @@ def pull():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         # Exécutez la commande Git pull
-        result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True,cwd=script_dir,shell=True)
+        result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True, cwd=script_dir, shell=True)
 
         if result.returncode == 0:
             # Si le pull est réussi, lancez la requête différée dans un thread
@@ -26,11 +26,10 @@ def pull():
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
 def make():
-    
     try:
-        # Vérification de la fin du pull
+        # Vérification de la fin du pull en vérifiant le status de git
         status_line = get_git_status()
-        while(status_line != "Your branch is up to date with" ) :
+        while status_line != "Your branch is up to date with 'origin/main'":
             time.sleep(3)
             status_line = get_git_status()
 
@@ -38,11 +37,7 @@ def make():
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
         # Exécution de la commande 'make.bat html' dans le répertoire du script
-        result = subprocess.run(['make.bat', 'html'], 
-                                capture_output=True, 
-                                text=True, 
-                                cwd=script_dir,
-                                shell=True)
+        result = subprocess.run(['make.bat', 'html'], capture_output=True, text=True, cwd=script_dir, shell=True)
         
         # Vérification du code de retour
         if result.returncode == 0:
@@ -56,20 +51,20 @@ def make():
 def get_git_status():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     # Exécute la commande `git status`
-    result = subprocess.run(['git', 'status'], shell=True, capture_output=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=script_dir, text=True)
+    result = subprocess.run(['git', 'status'], capture_output=True, text=True, cwd=script_dir, shell=True)
     
     # Vérifie si la commande s'est exécutée avec succès
     if result.returncode != 0:
-        print(f"Erreur lors de l'exécution de git status: {result.stderr}")
+        logging.error(f"Erreur lors de l'exécution de git status: {result.stderr}")
         return "None"
     
     # Parcourt chaque ligne de la sortie pour trouver celle qui nous intéresse
     for line in result.stdout.split('\n'):
         if 'Your branch is up to date with' in line:
-            return "Your branch is up to date with"
+            return line.strip()
     
     return "None"
 
-
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     app.run(debug=True, port=8000)  # Changer le port ici
