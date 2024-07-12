@@ -6,8 +6,11 @@ import logging
 
 app = Flask(__name__)
 
+branch = None
+
 @app.route('/pull_make', methods=['POST'])
 def pull():
+    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
     
     try:
         # lancer le pull dans la requête différée dans un thread
@@ -18,7 +21,6 @@ def pull():
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
 def make():
-    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
 
     try:
         # Exécutez la commande Git pull
