@@ -10,6 +10,7 @@ branch = None
 
 @app.route('/pull_make', methods=['POST'])
 def pull():
+    global branch
     branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
     
     try:
@@ -21,6 +22,7 @@ def pull():
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
 def make():
+    global branch
 
     try:
         # Exécutez la commande Git pull
