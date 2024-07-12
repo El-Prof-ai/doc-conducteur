@@ -60,4 +60,4 @@ def get_git_status():
     return 'None'
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)  # Changer le port ici
+    app.run(debug=True)  # Changer le port ici
