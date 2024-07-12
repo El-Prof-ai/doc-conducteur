@@ -28,7 +28,7 @@ def delayed_request():
     time.sleep(60)
     # Faire la requête POST à /execute-make-html
     try:
-        response = requests.post('http://127.0.0.1:8000/execute-make-html')
+        response = requests.post('http://127.0.0.1:5000/execute-make-html')
         print(f"Request to /execute-make-html responded with: {response.status_code} {response.text}")
     except Exception as e:
         print(f"Failed to make request to /execute-make-html: {str(e)}")
