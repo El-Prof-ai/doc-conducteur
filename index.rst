@@ -5,7 +5,7 @@
 
 Bienvenue dans la documentation de la page de présentation des conducteur !
 ===========================================================================
-ça marche TRS BIEN!
+ça marche !
 
 .. toctree::
    :maxdepth: 2
