@@ -3,38 +3,27 @@ from flask import Flask, request, jsonify
 import subprocess
 import threading
 import logging
-import time
 
 app = Flask(__name__)
 
 @app.route('/pull_make', methods=['POST'])
 def pull():
-    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
     
     try:
-        # Exécutez la commande Git pull
-        result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True)
+        # lancer le pull dans la requête différée dans un thread
+        threading.Thread(target=make).start()
+        return jsonify({'message': 'requete bien reçue'}), 200
 
-        if result.returncode == 0:
-            # Si le pull est réussi, lancez la requête différée dans un thread
-            threading.Thread(target=make).start()
-            print('REPONDRE')
-            return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
-        else:
-            return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
 def make():
-    
+    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
+
     try:
-        print('make()')
-        status_line = get_git_status()
-        while(status_line != 'Your branch is up to date with'):
-            print('GIT STATUS')
-            time.sleep(3)
-            status_line = get_git_status()
-        print('start make()........')
+        # Exécutez la commande Git pull
+        result = subprocess.run(['git', 'pull', 'origin', branch, '--force'], capture_output=True, text=True)
+        print('pull terminé')
         # Obtenir le chemin du répertoire du script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         
@@ -46,7 +35,6 @@ def make():
                                 shell=True)
         
         # Vérification du code de retour
-        print('end make()........')
         if result.returncode == 0:
             logging.info('Exécution de make.bat html réussie: %s', result.stdout)
         else:
@@ -72,4 +60,4 @@ def get_git_status():
     return 'None'
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)  # Changer le port ici
+    app.run(debug=True, port=5000)  # Changer le port ici

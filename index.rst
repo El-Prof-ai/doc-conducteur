@@ -5,7 +5,7 @@
 
 Bienvenue dans la documentation de la page de présentation des conducteur !
 ===========================================================================
-TOUT EST OK !
+Tout est fonctionnel !
 
 .. toctree::
    :maxdepth: 2
