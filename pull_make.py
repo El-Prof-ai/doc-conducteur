@@ -18,6 +18,7 @@ def pull():
         if result.returncode == 0:
             # Si le pull est réussi, lancez la requête différée dans un thread
             threading.Thread(target=make).start()
+            logging.info('REPONDRE')
             return jsonify({'message': 'Pull successful', 'output': result.stdout}), 200
         else:
             return jsonify({'message': 'Pull failed', 'error': result.stderr}), 500
