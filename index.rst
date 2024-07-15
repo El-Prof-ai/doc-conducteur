@@ -5,7 +5,7 @@
 
 Bienvenue dans la documentation de la page de présentation des conducteur !
 ===========================================================================
-Test sur  !
+Test sur l'IA !
 
 .. toctree::
    :maxdepth: 2
