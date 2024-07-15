@@ -11,7 +11,7 @@ branch = None
 @app.route('/pull_make', methods=['POST'])
 def pull():
     global branch
-    branch = request.json.get('branch', 'main')  # Par défaut, la branche est 'main'
+    branch = {"branch": "main"}
     
     try:
         # lancer le pull dans la requête différée dans un thread
